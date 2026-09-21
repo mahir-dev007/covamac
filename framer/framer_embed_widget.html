@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CovaMac Curated Mac Gear</title>
+  <style>
+    :root {
+      --bg-card: rgba(22, 27, 34, 0.85);
+      --border-card: rgba(255, 255, 255, 0.1);
+      --primary-blue: #0A84FF;
+      --accent-cyan: #30D158;
+      --accent-amber: #FF9F0A;
+      --text-main: #FFFFFF;
+      --text-muted: #8B949E;
+      --star-color: #FFD60A;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: transparent;
+      color: var(--text-main);
+      padding: 20px;
+    }
+
+    .covamac-gear-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      background: rgba(13, 17, 23, 0.95);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      padding: 32px 28px;
+      backdrop-filter: blur(25px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header-title-box h2 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-title-box p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .badge-pill {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-featured {
+      background: rgba(10, 132, 255, 0.2);
+      color: #5AC8FA;
+      border: 1px solid rgba(10, 132, 255, 0.35);
+    }
+
+    .badge-deal {
+      background: rgba(255, 159, 10, 0.2);
+      color: #FFB340;
+      border: 1px solid rgba(255, 159, 10, 0.35);
+    }
+
+    .carousel-nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .shuffle-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9CA3AF;
+      letter-spacing: 0.2px;
+    }
+
+    .live-pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #30D158;
+      box-shadow: 0 0 8px #30D158;
+      animation: pulseGlow 1.8s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.8); }
+    }
+
+    .shuffle-btn {
+      background: rgba(10, 132, 255, 0.15);
+      border: 1px solid rgba(10, 132, 255, 0.35);
+      color: #5AC8FA;
+      padding: 6px 13px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .shuffle-btn:hover {
+      background: rgba(10, 132, 255, 0.3);
+      border-color: #0A84FF;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(10, 132, 255, 0.25);
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.05);
+    }
+
+    .timer-track-bar {
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 2px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .timer-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #0A84FF, #30D158, #FF9F0A);
+      border-radius: 2px;
+      transition: width 0.05s linear;
+    }
+
+    .carousel-viewport {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card-track {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      padding: 6px 2px 18px 2px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.22) rgba(255, 255, 255, 0.04);
+    }
+
+    .card-track::-webkit-scrollbar {
+      height: 7px;
+    }
+
+    .card-track::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 10px;
+    }
+
+    .card-track::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.22);
+      border-radius: 10px;
+    }
+
+    .card-track::-webkit-scrollbar-thumb:hover {
+      background: rgba(10, 132, 255, 0.7);
+    }
+
+    .gear-card {
+      flex: 0 0 320px;
+      width: 320px;
+      scroll-snap-align: start;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gear-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(10, 132, 255, 0.45);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(10, 132, 255, 0.15);
+    }
+
+    @media (max-width: 640px) {
+      .gear-card {
+        flex: 0 0 85vw;
+        width: 85vw;
+      }
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .card-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 5px;
+      flex-shrink: 0;
+    }
+
+    .card-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 6px;
+      color: #FFFFFF;
+    }
+
+    .card-tagline {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 14px;
+      flex-grow: 1;
+    }
+
+    .rating-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .stars {
+      color: var(--star-color);
+      letter-spacing: 1px;
+    }
+
+    .review-count {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .specs-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .spec-pill {
+      font-size: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 4px 8px;
+      border-radius: 6px;
+      color: #D1D5DB;
+      font-weight: 500;
+    }
+
+    .cta-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #FF9900 0%, #E67A00 100%);
+      color: #111111;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(230, 122, 0, 0.3);
+    }
+
+    .cta-btn:hover {
+      background: linear-gradient(135deg, #FFAC26 0%, #FF8800 100%);
+      box-shadow: 0 6px 18px rgba(255, 153, 0, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .disclaimer-box {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #6E7681;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .disclaimer-box a {
+      color: #58A6FF;
+      text-decoration: none;
+    }
+
+    @media (max-width: 640px) {
+      .covamac-gear-container {
+        padding: 20px 16px;
+      }
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="covamac-gear-container">
+    <div class="header-row">
+      <div class="header-title-box">
+        <h2>⚡️ Recommended Mac Accessories</h2>
+        <p>Curated high-performance gear tested for optimal speed, charging, and protection with CovaMac.</p>
+      </div>
+      <div class="carousel-nav">
+        <div class="shuffle-status-pill" id="shuffleStatus">
+          <span class="live-pulse"></span>
+          <span id="shuffleStatusText">Auto-shuffling • 5s</span>
+        </div>
+        <button class="shuffle-btn" onclick="shuffleOrder()" title="Randomize product order">
+          🔀 Shuffle
+        </button>
+        <button class="nav-btn" onclick="scrollPrev()" title="Previous Gear">◀</button>
+        <button class="nav-btn" onclick="scrollNext()" title="Next Gear">▶</button>
+      </div>
+    </div>
+
+    <!-- Live Auto-Shuffle Progress Countdown -->
+    <div class="timer-track-bar">
+      <div class="timer-fill" id="timerFill"></div>
+    </div>
+
+    <!-- Scrollable Gear Track Viewport (Scroll + Auto-Shuffle) -->
+    <div class="carousel-viewport" id="carouselViewport">
+      <div class="card-track" id="gearTrack">
+        <!-- Injected via JavaScript (all 13 cards rendered) -->
+      </div>
+    </div>
+
+    <div class="disclaimer-box">
+      <span>🛡 Verified compatible with Apple Silicon & Intel MacBooks</span>
+      <span>*As an Amazon Associate, CovaMac earns from qualifying purchases at no additional cost to you.</span>
+    </div>
+  </div>
+
+  <script>
+    const allProducts = [
+      {
+        title: "Anker 140W Max 4-Port GaN Charger",
+        tagline: "Ultra-fast charging for 16\" MacBook Pro + iPhone & iPad simultaneously.",
+        category: "Power & Battery",
+        badge: "TOP PICK",
+        badgeClass: "badge-deal",
+        image: "https://m.media-amazon.com/images/I/61EUVVvuk1L._AC_SL1500_.jpg",
+        rating: 4.8,
+        reviews: "5,240+",
+        specs: ["140W Max Output", "4-Port GaNPrime", "Smart LCD Display"],
+        url: "https://amzn.to/46wCiDm"
+      },
+      {
+        title: "WHOOSH! Screen Shine Pro Cleaner",
+        tagline: "The exact screen cleaning formula trusted by Apple Retail Stores worldwide.",
+        category: "Display & Care",
+        badge: "PRO DISPLAY CARE",
+        badgeClass: "badge-featured",
+        image: "https://m.media-amazon.com/images/I/71AJth10-BL._AC_SL1500_.jpg",
+        rating: 4.9,
+        reviews: "8,640+",
+        specs: ["Liquid Retina Safe", "Ammonia-Free Formula", "2x Microfiber Cloths"],
+        url: "https://amzn.to/4y66kKi"
+      },
+      {
+        title: "PHIXERO 1TB External NVMe SSD",
+        tagline: "Blazing 1050MB/s USB 3.2 Gen 2 portable storage for Time Machine & media.",
+        category: "Storage & Backups",
+        badge: "EDITORS' PICK",
+        badgeClass: "badge-featured",
+        image: "https://m.media-amazon.com/images/I/61zuR3UMnWL._AC_SL1500_.jpg",
+        rating: 4.7,
+        reviews: "1,890+",
+        specs: ["1050 MB/s Read/Write", "1TB NVMe Flash", "Shockproof Aluminum"],
+        url: "https://amzn.to/4rgxlrI"
+      },
+      {
+        title: "Anker 8-in-1 USB-C Docking Station",
+        tagline: "Dual 4K@60Hz HDMI, 85W Power Delivery, Gigabit Ethernet & SD readers.",
+        category: "Desk & Connectivity",
+        badge: "BEST SELLER",
+        badgeClass: "badge-deal",
+        image: "https://m.media-amazon.com/images/I/71S-NPBF-qL._AC_SL1500_.jpg",
+        rating: 4.8,
+        reviews: "4,120+",
+        specs: ["4K@60Hz HDMI", "85W High-Speed PD", "Gigabit Ethernet"],
+        url: "https://amzn.to/4rgQrOi"
+      },
+      {
+        title: "UGREEN 240W Braided USB-C Cable",
+        tagline: "Heavy-duty nylon braided 6.6ft cable supporting up to 240W charging.",
+        category: "Power & Cables",
+        badge: "PRO CABLE",
+        badgeClass: "badge-featured",
+        image: "https://m.media-amazon.com/images/I/71EEFVl-XaL._AC_SL1500_.jpg",
+        rating: 4.9,
+        reviews: "6,800+",
+        specs: ["240W Fast Power", "Heavy-Duty Braided", "E-Marker Smart Chip"],
+        url: "https://amzn.to/4iBMQIC"
+      },
+      {
+        title: "tomtoc 360° Armor Laptop Sleeve",
+        tagline: "Military-grade CornerArmor protection against drops, dings, and spills.",
+        category: "Protection",
+        badge: "MIL-STD CERTIFIED",
+        badgeClass: "badge-featured",
+        image: "https://m.media-amazon.com/images/I/81Vl7AcUIyL._AC_SL1500_.jpg",
+        rating: 4.8,
+        reviews: "9,450+",
+        specs: ["CornerArmor Protection", "YKK Zippers", "Water-Resistant"],
+        url: "https://amzn.to/4xB77Su"
+      },
+      {
+        title: "Nulaxy 360° Rotating Aluminum Stand",
+        tagline: "Ergonomic telescopic laptop riser with 360-degree swivel base.",
+        category: "Ergonomics",
+        badge: "TOP RATED",
+        badgeClass: "badge-deal",
+        image: "https://m.media-amazon.com/images/I/81r9PQ20TPL._AC_SL1500_.jpg",
+        rating: 4.8,
+        reviews: "3,110+",
+        specs: ["360° Swivel Base", "Heavy Aluminum", "Thermal Ventilation"],
+        url: "https://amzn.to/4xuxNny"
+      },
+      {
+        title: "Ordilend All-in-1 Precision Cleaning Kit",
+        tagline: "Deep cleaning tools for keyboard switches, speaker grills, and USB-C ports.",
+        category: "Maintenance",
+        badge: "DEEP CLEAN",
+        badgeClass: "badge-featured",
+        image: "https://m.media-amazon.com/images/I/71AJth10-BL._AC_SL1500_.jpg",
+        rating: 4.7,
+        reviews: "3,780+",
+        specs: ["Port Cleaning Brushes", "Keycap Puller", "Anti-Static Tools"],
+        url: "https://amzn.to/3T77PbW"
+      },
+      {
+        title: "Anker 65W Compact Foldable GaN Charger",
+        tagline: "Pocket-sized 3-port charger perfect for MacBook Air and on-the-go travel.",
+        category: "Travel Power",
+        badge: "TRAVEL COMPACT",
+        badgeClass: "badge-deal",
+        image: "https://m.media-amazon.com/images/I/5164giE9fFL._AC_SL1500_.jpg",
+        rating: 4.8,
+        reviews: "7,320+",
+        specs: ["65W Foldable Prongs", "3 Device Multi-Charge", "GaN II Tech"],
+        url: "https://amzn.to/3UQgFLJ"
+      },
+      {
+        title: "OMOTON Dual Vertical Clamshell Stand",
+        tagline: "Space-saving anodized aluminum vertical stand for dual MacBooks.",
+        category: "Desk Setup",
+        badge: "DESK UPGRADE",
+        badgeClass: "badge-featured",
+        image: "https://m.media-amazon.com/images/I/51AKlX1PlbL._AC_SL1500_.jpg",
+        rating: 4.8,
+        reviews: "4,500+",
+        specs: ["Dual Dock Slots", "Adjustable Width", "Anti-Scratch Silicone"],
+        url: "https://amzn.to/4hcjUEt"
+      },
+      {
+        title: "SUPCASE Rugged Armor Hard Shell",
+        tagline: "Heavy-duty shock-absorbent bumper case with built-in fold-out kickstand.",
+        category: "Protection",
+        badge: "MAX PROTECTION",
+        badgeClass: "badge-deal",
+        image: "https://m.media-amazon.com/images/I/61AC72HahCL._AC_SL1500_.jpg",
+        rating: 4.7,
+        reviews: "2,340+",
+        specs: ["Shock-Absorbing Bezel", "Fold-out Kickstand", "Vented Base"],
+        url: "https://amzn.to/4dE4BDx"
+      },
+      {
+        title: "HOMEGYMFREE Travel Organizer Case",
+        tagline: "Waterproof shockproof hard case for chargers, dongles, and power banks.",
+        category: "Travel",
+        badge: "TRAVEL READY",
+        badgeClass: "badge-featured",
+        image: "https://m.media-amazon.com/images/I/61AtgfXEUhL._AC_SL1500_.jpg",
+        rating: 4.7,
+        reviews: "1,220+",
+        specs: ["Hard EVA Shell", "Internal Mesh Pouches", "Waterproof Zipper"],
+        url: "https://amzn.to/4hAerIY"
+      },
+      {
+        title: "Samsers Foldable Bluetooth Keyboard Combo",
+        tagline: "Pocket tri-folding keyboard with multi-device Bluetooth sync & mouse.",
+        category: "Portability",
+        badge: "ULTRA PORTABLE",
+        badgeClass: "badge-deal",
+        image: "https://m.media-amazon.com/images/I/71wIK9wYO9L._AC_SL1500_.jpg",
+        rating: 4.6,
+        reviews: "1,980+",
+        specs: ["Tri-Fold Compact", "Bluetooth 5.1", "Type-C Rechargeable"],
+        url: "https://amzn.to/4yNAwK8"
+      }
+    ];
+
+    const track = document.getElementById("gearTrack");
+    const timerFill = document.getElementById("timerFill");
+    const statusText = document.getElementById("shuffleStatusText");
+    const viewport = document.getElementById("carouselViewport");
+
+    let isPaused = false;
+    const shuffleIntervalMs = 5000; // Auto-shuffles every 5 seconds
+    let elapsedMs = 0;
+    const tickMs = 50;
+
+    function renderAllProducts() {
+      if (!track) return;
+      track.innerHTML = "";
+
+      allProducts.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "gear-card";
+        card.innerHTML = `
+          <div>
+            <div class="card-top">
+              <div class="card-icon">
+                <img src="${item.image}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" />
+              </div>
+              <span class="badge-pill ${item.badgeClass}">${item.badge}</span>
+            </div>
+            <h3 class="card-title">${item.title}</h3>
+            <p class="card-tagline">${item.tagline}</p>
+            <div class="rating-row">
+              <span class="stars">★★★★★</span>
+              <strong>${item.rating}</strong>
+              <span class="review-count">(${item.reviews})</span>
+            </div>
+            <div class="specs-row">
+              ${item.specs.map(s => `<span class="spec-pill">${s}</span>`).join("")}
+            </div>
+          </div>
+          <a href="${item.url}" target="_blank" rel="noopener noreferrer sponsored" class="cta-btn">
+            View on Amazon ↗
+          </a>
+        `;
+        track.appendChild(card);
+      });
+    }
+
+    function scrollNext() {
+      if (!track) return;
+      const card = track.querySelector(".gear-card");
+      const step = card ? (card.offsetWidth + 18) : 338;
+      const maxScroll = track.scrollWidth - track.clientWidth;
+
+      if (track.scrollLeft >= maxScroll - 15) {
+        track.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        track.scrollBy({ left: step, behavior: "smooth" });
+      }
+      elapsedMs = 0;
+    }
+
+    function scrollPrev() {
+      if (!track) return;
+      const card = track.querySelector(".gear-card");
+      const step = card ? (card.offsetWidth + 18) : 338;
+
+      if (track.scrollLeft <= 15) {
+        track.scrollTo({ left: track.scrollWidth, behavior: "smooth" });
+      } else {
+        track.scrollBy({ left: -step, behavior: "smooth" });
+      }
+      elapsedMs = 0;
+    }
+
+    function shuffleOrder() {
+      // Fisher-Yates shuffle array
+      for (let i = allProducts.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [allProducts[i], allProducts[j]] = [allProducts[j], allProducts[i]];
+      }
+      renderAllProducts();
+      if (track) track.scrollTo({ left: 0, behavior: "smooth" });
+      elapsedMs = 0;
+      if (timerFill) timerFill.style.width = "0%";
+    }
+
+    // Pause auto-shuffle when mouse is over cards so user can read / click comfortably
+    if (viewport) {
+      viewport.addEventListener("mouseenter", () => {
+        isPaused = true;
+        if (statusText) statusText.textContent = "Paused (Hover)";
+      });
+
+      viewport.addEventListener("mouseleave", () => {
+        isPaused = false;
+        if (statusText) statusText.textContent = "Auto-shuffling • 5s";
+      });
+
+      // Mobile touch pause
+      viewport.addEventListener("touchstart", () => { isPaused = true; }, { passive: true });
+      viewport.addEventListener("touchend", () => { isPaused = false; }, { passive: true });
+    }
+
+    // Auto-advance progress tick
+    setInterval(() => {
+      if (isPaused) return;
+
+      elapsedMs += tickMs;
+      const pct = Math.min(100, (elapsedMs / shuffleIntervalMs) * 100);
+      if (timerFill) timerFill.style.width = pct + "%";
+
+      if (elapsedMs >= shuffleIntervalMs) {
+        elapsedMs = 0;
+        scrollNext();
+      }
+    }, tickMs);
+
+    // Initial random shuffle on page load
+    shuffleOrder();
+  </script>
+</body>
+</html>
